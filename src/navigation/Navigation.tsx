@@ -3,6 +3,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import SplashScreen from '../screens/SplashScreen';
 import LoginScreen from '../screens/LoginScreen';
+import HomeScreen from '../screens/HomeScreen';
+import { navigationRef } from '../utils/NavigationUtils';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,7 +21,9 @@ const Navigation: FC = () => {
           name="SplashScreen"
           component={SplashScreen}
         ></Stack.Screen>
+        <Stack.Screen name="HomeScreen" component={HomeScreen} ></Stack.Screen>
         <Stack.Screen name="LoginScreen" component={LoginScreen}></Stack.Screen>
+        
       </Stack.Navigator>
     </NavigationContainer>
   );
