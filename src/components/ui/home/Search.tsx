@@ -5,6 +5,8 @@ import { ChevronRightIcon, MagnifyingGlassCircleIcon, MagnifyingGlassIcon } from
 import { formatJourneyDate } from '../../../utils/DateUtils'
 import { useNavigation } from '@react-navigation/native'
 import { Button } from '../ui/Button'
+import FromLocationPicker from '../ui/FromLocationPicker'
+import ToLocationPicker from '../ui/ToLocationPicker'
 
 
 
@@ -114,6 +116,8 @@ const handleSearchBuses = () => {
           {error ? <Text className="text-error font-okra text-sm mt-4">{error}</Text> : null}
           <Button className='mt-10' label="Search Buses" onPress={handleSearchBuses} icon={<MagnifyingGlassIcon color={'#ffffff'} size={20}/>}/>
       </View>
+      <FromLocationPicker openFromModal={showFromPicker} selected={from} onSelect={(city: string)=> setFrom(city)} onClose={()=> setShowFromPicker(false)}/>
+      <ToLocationPicker visible={showToPicker} toCity={to} onSetToCity={(to: string)=> setTo(to)} onClose={()=> setShowToPicker(false)}/>
     </View>
   )
 }
