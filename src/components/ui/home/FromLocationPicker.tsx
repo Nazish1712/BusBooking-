@@ -28,7 +28,7 @@ const FromLocationPicker = ({
 }: FromLocationPickerProps) => {
   const [search, setSearch] = useState('');
   const [cities, setCities] = useState([]);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -45,14 +45,14 @@ const FromLocationPicker = ({
           if (active) {
             setIsLoading(false);
             setCities(result);
-            setError(null);
+            setError('');
           }
         })
         .catch(error => {
           if (active) {
             setIsLoading(false);
             setCities([]);
-            setError(error);
+            setError(error?.message);
           }
         });
     }, 300);
