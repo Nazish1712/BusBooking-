@@ -5,6 +5,8 @@ import SplashScreen from '../screens/SplashScreen';
 import LoginScreen from '../screens/LoginScreen';
 import HomeScreen from '../screens/HomeScreen';
 import BusListScreen from '../screens/BusListScreen';
+import SeatSelectionScreen from '../screens/SeatSelectionScreen';
+
 import { navigationRef } from '../utils/NavigationUtils';
 
 const Stack = createNativeStackNavigator();
@@ -22,9 +24,16 @@ const Navigation: FC = () => {
           name="SplashScreen"
           component={SplashScreen}
         ></Stack.Screen>
-        <Stack.Screen name="HomeScreen" component={HomeScreen} ></Stack.Screen>
+        <Stack.Screen name="HomeScreen" component={HomeScreen}></Stack.Screen>
         <Stack.Screen name="LoginScreen" component={LoginScreen}></Stack.Screen>
-        <Stack.Screen name="BusListScreen" component={BusListScreen}></Stack.Screen>
+        <Stack.Screen
+          name="BusListScreen"
+          component={BusListScreen}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="SeatSelectionScreen"
+          component={SeatSelectionScreen}
+        ></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );

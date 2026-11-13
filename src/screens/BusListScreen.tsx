@@ -15,7 +15,7 @@ import ErrorComponent from '../components/ui/ui/Error';
 
 const BusListScreen = () => {
   const route = useRoute();
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
   const params = route?.params as any;
   const [filterValue, setFilterValue] = useState('All');
@@ -92,6 +92,11 @@ const BusListScreen = () => {
               <TouchableOpacity
                 key={item.busId}
                 className="bg-surface mb-4 p-4 rounded-2xl border border-border shadow-md"
+                onPress={() =>
+                  navigation.navigate('SeatSelectionScreen', {
+                    item: { busId: item?.busId },
+                  })
+                }
               >
                 <View className="flex-row items-center ">
                   <Image className="h-6 w-8 " source={images.logo} />

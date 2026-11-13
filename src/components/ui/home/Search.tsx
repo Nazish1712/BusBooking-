@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, Image } from 'react-native';
 import React, { useState } from 'react';
 import { images } from '../../../assets/images';
 import {
+  CalendarDaysIcon,
   ChevronRightIcon,
   MagnifyingGlassCircleIcon,
   MagnifyingGlassIcon,
@@ -100,7 +101,8 @@ const Search = () => {
             onPress={() => setShowDatePicker(true)}
           >
             <View className="h-10 w-10 rounded-2xl bg-neutral items-center justify-center">
-              <Image source={images.logo} className="h-5 w-5" />
+              {/* <Image source={images.logo} className="h-5 w-5" /> */}
+              <CalendarDaysIcon className="h-4 w-4" />
             </View>
             <View className="ml-3 flex-1">
               <Text className="text-xs font-okra text-on-surface/50">
@@ -117,7 +119,7 @@ const Search = () => {
           <Text className="text-error font-okra text-sm mt-4">{error}</Text>
         ) : null}
         <Button
-          className="mt-10"
+          className="mt-10 color-primary"
           label="Search Buses"
           onPress={handleSearchBuses}
           icon={<MagnifyingGlassIcon color={'#ffffff'} size={20} />}
