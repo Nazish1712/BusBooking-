@@ -20,7 +20,7 @@ export const Button = ({
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
-      className={`flex-row items-center justify-center rounded-2xl bg-primary px-4 py-4 ${className} ${
+      className={`flex-row items-center justify-center rounded-2xl bg-tertiary px-4 py-4 ${className} ${
         disabled ? 'opacity-50' : ''
       }`}
     >

@@ -62,7 +62,7 @@ const BusListScreen = () => {
             <TouchableOpacity
               key={item}
               className={`px-4 py-2 rounded-full mr-2 ${
-                isSelected ? 'bg-primary' : 'bg-neutral'
+                isSelected ? 'bg-tertiary' : 'bg-neutral'
               }`}
               onPress={() => setFilterValue(item)}
             >
