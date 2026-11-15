@@ -4,7 +4,6 @@ import { images } from '../../../assets/images';
 import {
   CalendarDaysIcon,
   ChevronRightIcon,
-  MagnifyingGlassCircleIcon,
   MagnifyingGlassIcon,
 } from 'react-native-heroicons/solid';
 import {

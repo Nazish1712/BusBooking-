@@ -51,8 +51,10 @@ const SeatSelectionScreen = () => {
     const bookingData = {
       busId: busId,
       date: new Date(busAndSeatData.departureTime).toISOString().split('T')[0],
+      seatNumbers: selectedSeats
     };
-    bookTicket({});
+    // bookTicket(bookingData)
+    // .then()
   };
 
   return (
