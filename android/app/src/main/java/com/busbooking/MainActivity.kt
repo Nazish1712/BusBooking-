@@ -1,4 +1,4 @@
-package com.busbooking
+package com.journeo
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

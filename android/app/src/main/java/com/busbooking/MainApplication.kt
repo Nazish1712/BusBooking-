@@ -1,4 +1,4 @@
-package com.busbooking
+package com.journeo
 
 import android.app.Application
 import com.facebook.react.PackageList
