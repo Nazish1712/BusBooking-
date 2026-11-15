@@ -20,7 +20,12 @@ const DatePicker = ({
   console.log(journeyDate, 'joirney date');
 
   return (
-    <Modal transparent animationType="slide" visible={visible}>
+    <Modal
+      transparent
+      animationType="slide"
+      visible={visible}
+      onRequestClose={onDateClose}
+    >
       <View className="flex-1 justify-end">
         <Pressable
           style={{
@@ -45,7 +50,7 @@ const DatePicker = ({
             markedDates={{
               [formatCalendarDate(journeyDate)]: {
                 selected: true,
-                selectedColor: '#FC5431',
+                selectedColor: '#CF3239',
               },
             }}
             onDayPress={day => {
@@ -54,8 +59,8 @@ const DatePicker = ({
             }}
             theme={{
               selectedDayTextColor: '#ffffff',
-              selectedDayBackgroundColor: '#FC5431',
-              arrowColor: '#FC5431',
+              selectedDayBackgroundColor: '#CF3239',
+              arrowColor: '#CF3239',
               todayTextColor: '#00000',
             }}
           />

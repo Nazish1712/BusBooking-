@@ -9,6 +9,7 @@ import { convertToLocalTime } from '../utils/DateUtils';
 import { Button } from '../components/ui/ui/Button';
 import ErrorComponent from '../components/ui/ui/Error';
 import Shimmer from '../components/ui/ui/Shimmer';
+import { bookTicket } from '../service/requests/bookTicket';
 
 const SeatSelectionScreen = () => {
   const navigation = useNavigation();
@@ -44,6 +45,14 @@ const SeatSelectionScreen = () => {
       const updatedSelectedSeats = [...selectedSeats, seatId];
       setSelectedSeats(updatedSelectedSeats);
     }
+  };
+
+  const handlePayNow = () => {
+    const bookingData = {
+      busId: busId,
+      date: new Date(busAndSeatData.departureTime).toISOString().split('T')[0],
+    };
+    bookTicket({});
   };
 
   return (
