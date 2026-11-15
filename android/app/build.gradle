@@ -92,7 +92,7 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-         release {
+        release {
             storeFile file('release.keystore')
             storePassword 'journeo1712A'
             keyAlias 'journeo'
