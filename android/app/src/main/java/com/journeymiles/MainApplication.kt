@@ -1,4 +1,4 @@
-package com.journeo
+package com.journeymiles
 
 import android.app.Application
 import com.facebook.react.PackageList
