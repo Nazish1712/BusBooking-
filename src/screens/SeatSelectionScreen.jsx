@@ -1,27 +1,35 @@
-import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { ArrowLeftIcon, StarIcon } from 'react-native-heroicons/solid';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { images } from '../assets/images';
-import { fetchBusDetails } from '../service/requests/seatSelection';
-import { convertToLocalTime } from '../utils/DateUtils';
-import { Button } from '../components/ui/ui/Button';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {ArrowLeftIcon, StarIcon} from 'react-native-heroicons/solid';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {images} from '../assets/images';
+import {fetchBusDetails} from '../service/requests/seatSelection';
+import {convertToLocalTime} from '../utils/DateUtils';
+import {Button} from '../components/ui/ui/Button';
 import ErrorComponent from '../components/ui/ui/Error';
 import Shimmer from '../components/ui/ui/Shimmer';
-import { bookTicket } from '../service/requests/bookTicket';
+import TicketModal from '../components/ui/ui/TicketModal';
+import {bookTicket} from '../service/requests/bookTicket';
 
 const SeatSelectionScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const busId = route?.params?.item?.busId;
 
-  console.log(route);
-
   const [busAndSeatData, setBusAndSeatData] = useState([]);
   const [selectedSeats, setSelectedSeats] = useState([]);
+  const [bookedTicket, setBookedTicket] = useState(null);
+  const [ticketVisible, setTicketVisible] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [paying, setPaying] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -32,29 +40,39 @@ const SeatSelectionScreen = () => {
       })
       .catch(error => {
         setLoading(false);
-        setError(error.message);
+        setError(error?.message);
       });
-  }, []);
+  }, [busId]);
 
   const handlePressSeat = seatId => {
     const isAlreadySelectedSeat = selectedSeats.includes(seatId);
     if (isAlreadySelectedSeat) {
-      const filteredOutSeats = selectedSeats.filter(id => id !== seatId);
-      setSelectedSeats(filteredOutSeats);
+      setSelectedSeats(selectedSeats.filter(id => id !== seatId));
     } else {
-      const updatedSelectedSeats = [...selectedSeats, seatId];
-      setSelectedSeats(updatedSelectedSeats);
+      setSelectedSeats([...selectedSeats, seatId]);
     }
   };
 
   const handlePayNow = () => {
-    const bookingData = {
-      busId: busId,
-      date: new Date(busAndSeatData.departureTime).toISOString().split('T')[0],
-      seatNumbers: selectedSeats
-    };
-    // bookTicket(bookingData)
-    // .then()
+    setPaying(true);
+    bookTicket({
+      busId,
+      date: new Date(busAndSeatData.departureTime).toISOString(),
+      seatNumbers: selectedSeats,
+    })
+      .then(ticket => {
+        setPaying(false);
+        setBookedTicket(ticket);
+        setTicketVisible(true);
+      })
+      .catch(error => {
+        setPaying(false);
+        if (error?.message === 'Please login again') {
+          navigation.navigate('LoginScreen');
+          return;
+        }
+        setError(error?.message);
+      });
   };
 
   return (
@@ -62,7 +80,7 @@ const SeatSelectionScreen = () => {
       {loading ? (
         <Shimmer />
       ) : error ? (
-        <ErrorComponent />
+        <ErrorComponent error={error} />
       ) : busAndSeatData?.length === 0 ? (
         <Text className="text-base font-okra text-on-surface/40">
           No bus details found.
@@ -71,7 +89,7 @@ const SeatSelectionScreen = () => {
         <>
           <View className="flex-row bg-surface px-4 py-4 items-center border-b border-border ">
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <ArrowLeftIcon size={16} color="#11827" />
+              <ArrowLeftIcon size={16} color="#111827" />
             </TouchableOpacity>
             <View className="ml-4 flex-1">
               <Text className="text-base font-okra font-bold text-on-surface">
@@ -86,8 +104,7 @@ const SeatSelectionScreen = () => {
           <ScrollView
             showsVerticalScrollIndicator={false}
             className="flex-1 bg-surface"
-            contentContainerClassName="px-4 pb-6"
-          >
+            contentContainerClassName="px-4 pb-6">
             <View className="flex-row items-center mt-4">
               <Image source={images.logo} className="h-6 w-8" />
               <View className="ml-2 flex-1">
@@ -133,11 +150,9 @@ const SeatSelectionScreen = () => {
                   className="h-8 w-8 self-end mb-4"
                 />
                 {busAndSeatData?.seats?.map((rows, index) => {
-                  //  console.log(rows, "seatrows")
                   return (
                     <View key={index} className="flex-row justify-between mb-3">
                       {rows?.map(seat => {
-                        // console.log(seat, "seats");
                         if (seat.type === 'path') {
                           return (
                             <View key={seat.seat_id} className="h-10 w-10" />
@@ -153,8 +168,7 @@ const SeatSelectionScreen = () => {
                           <TouchableOpacity
                             key={seat.seat_id}
                             disabled={seat.booked}
-                            onPress={() => handlePressSeat(seat.seat_id)}
-                          >
+                            onPress={() => handlePressSeat(seat.seat_id)}>
                             <Image
                               source={seatImage}
                               className="w-10 h-10"
@@ -207,8 +221,38 @@ const SeatSelectionScreen = () => {
             </View>
           </ScrollView>
           <View className="px-4 pb-4 bg-surface">
-            <Button label="Pay Now" />
+            <Button
+              label={paying ? 'PLEASE WAIT' : 'Book Now'}
+              onPress={handlePayNow}
+              disabled={paying || selectedSeats.length === 0}
+            />
           </View>
+
+          {ticketVisible && (
+            <TicketModal
+              visible={ticketVisible}
+              onClose={() => {
+                setTicketVisible(false);
+                navigation.reset({
+                  index: 1,
+                  routes: [{name: 'HomeScreen'}, {name: 'BookingsScreen'}],
+                });
+              }}
+              bookingInfo={{
+                from: busAndSeatData.from,
+                to: busAndSeatData.to,
+                departureTime: convertToLocalTime(busAndSeatData.departureTime),
+                arrivalTime: convertToLocalTime(busAndSeatData.arrivalTime),
+                date: new Date(busAndSeatData.departureTime).toDateString(),
+                company: busAndSeatData.company,
+                busType: busAndSeatData.busType,
+                seats: bookedTicket?.seatNumbers,
+                ticketNumber: bookedTicket?._id || 'xxxxxxxxxx',
+                pnr: bookedTicket?.pnr || 'xxxxxxxxxxx',
+                fare: `${busAndSeatData.price * selectedSeats.length}`,
+              }}
+            />
+          )}
         </>
       )}
     </SafeAreaView>

@@ -8,7 +8,7 @@ import {
   setRefreshToken,
 } from './storage';
 
-export const api = async (endpoint: string, options: RequestInit) => {
+export const api = async (endpoint: string, options: RequestInit = {}) => {
   const token = getAccessToken();
 
   let response = await fetch(`${BASE_URL}${endpoint}`, {
@@ -17,7 +17,6 @@ export const api = async (endpoint: string, options: RequestInit) => {
       'Content-Type': 'application/json',
       ...options.headers,
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      // Authorization: token ? `Bearer ${token}` : ""
     },
   });
 
@@ -25,8 +24,9 @@ export const api = async (endpoint: string, options: RequestInit) => {
     const refreshToken = getRefreshToken();
 
     if (!refreshToken) {
-      throw new Error('Please login again.');
+      throw new Error('Please login again');
     }
+
     const refreshResponse = await fetch(`${BASE_URL}/auth/refresh`, {
       method: 'POST',
       headers: {
@@ -44,7 +44,7 @@ export const api = async (endpoint: string, options: RequestInit) => {
         removeAccessToken();
         removeRefreshToken();
       }
-      throw new Error('Unable to refresh session.');
+      throw new Error('Unable to refresh session');
     }
 
     const data = await refreshResponse.json();
@@ -64,16 +64,41 @@ export const api = async (endpoint: string, options: RequestInit) => {
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
-        ...(token ? { Authorization: `Bearer ${data.accessToken}` } : {}),
-        // Authorization: token ? `Bearer ${token}` : ""
+        Authorization: `Bearer ${data.accessToken}`,
       },
     });
   }
 
   if (!response.ok) {
-    throw new Error('API failed');
+    throw new Error(`API failed: ${response.status}`);
   }
 
-  const data = await response.json();
-  return data.data;
+  if (response.status === 204) {
+    return null;
+  }
+
+  return response.json();
+};
+
+export const publicApi = async (
+  endpoint: string,
+  options: RequestInit = {},
+) => {
+  const response = await fetch(`${BASE_URL}${endpoint}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`API failed: ${response.status}`);
+  }
+
+  if (response.status === 204) {
+    return null;
+  }
+
+  return response.json();
 };

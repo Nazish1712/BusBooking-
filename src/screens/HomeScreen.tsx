@@ -1,22 +1,28 @@
 import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { UserCircleIcon, UserIcon } from 'react-native-heroicons/solid';
+import { UserIcon } from 'react-native-heroicons/solid';
+import { useNavigation } from '@react-navigation/native';
 import Search from '../components/ui/home/Search';
 import { images } from '../assets/images';
 
 const HomeScreen = () => {
+  const navigation = useNavigation<any>();
+
   return (
     <SafeAreaView className="flex-1 bg-surface" edges={['top', 'bottom']}>
       <View className="flex-row justify-between items-center px-4 py-3">
         <View className="flex-row items-center">
           <Image source={images.logo} className="h-7 w-7" />
           <Text className="font-okra font-bold text-xl ml-2 text-on-surface">
-            BUS TICKET
+            Journey Miles
           </Text>
         </View>
 
-        <TouchableOpacity className="h-10 w-10 rounded-full bg-accent-soft items-center justify-center">
+        <TouchableOpacity
+          onPress={() => navigation.navigate('ProfileScreen')}
+          className="h-10 w-10 rounded-full bg-accent-soft items-center justify-center"
+        >
           <UserIcon color={'#CF3239'} size={22} />
         </TouchableOpacity>
       </View>
