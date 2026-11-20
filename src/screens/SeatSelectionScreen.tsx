@@ -1,31 +1,25 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {ArrowLeftIcon, StarIcon} from 'react-native-heroicons/solid';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {images} from '../assets/images';
-import {fetchBusDetails} from '../service/requests/seatSelection';
-import {convertToLocalTime} from '../utils/DateUtils';
-import {Button} from '../components/ui/ui/Button';
+import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { ArrowLeftIcon, StarIcon } from 'react-native-heroicons/solid';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { images } from '../assets/images';
+import { fetchBusDetails } from '../service/requests/seatSelection';
+import { convertToLocalTime } from '../utils/DateUtils';
+import { Button } from '../components/ui/ui/Button';
 import ErrorComponent from '../components/ui/ui/Error';
 import Shimmer from '../components/ui/ui/Shimmer';
-import TicketModal from '../components/ui/ui/TicketModal';
-import {bookTicket} from '../service/requests/bookTicket';
+import TicketModal from '../components/bookings/TicketModal';
+import { bookTicket } from '../service/requests/bookTicket';
 
 const SeatSelectionScreen = () => {
-  const navigation = useNavigation();
-  const route = useRoute();
+  const navigation = useNavigation<any>();
+  const route = useRoute<any>();
   const busId = route?.params?.item?.busId;
 
-  const [busAndSeatData, setBusAndSeatData] = useState([]);
-  const [selectedSeats, setSelectedSeats] = useState([]);
-  const [bookedTicket, setBookedTicket] = useState(null);
+  const [busAndSeatData, setBusAndSeatData] = useState<any>(null);
+  const [selectedSeats, setSelectedSeats] = useState<any[]>([]);
+  const [bookedTicket, setBookedTicket] = useState<any>(null);
   const [ticketVisible, setTicketVisible] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -44,7 +38,7 @@ const SeatSelectionScreen = () => {
       });
   }, [busId]);
 
-  const handlePressSeat = seatId => {
+  const handlePressSeat = (seatId: any) => {
     const isAlreadySelectedSeat = selectedSeats.includes(seatId);
     if (isAlreadySelectedSeat) {
       setSelectedSeats(selectedSeats.filter(id => id !== seatId));
@@ -81,7 +75,7 @@ const SeatSelectionScreen = () => {
         <Shimmer />
       ) : error ? (
         <ErrorComponent error={error} />
-      ) : busAndSeatData?.length === 0 ? (
+      ) : !busAndSeatData ? (
         <Text className="text-base font-okra text-on-surface/40">
           No bus details found.
         </Text>
@@ -104,7 +98,8 @@ const SeatSelectionScreen = () => {
           <ScrollView
             showsVerticalScrollIndicator={false}
             className="flex-1 bg-surface"
-            contentContainerClassName="px-4 pb-6">
+            contentContainerClassName="px-4 pb-6"
+          >
             <View className="flex-row items-center mt-4">
               <Image source={images.logo} className="h-6 w-8" />
               <View className="ml-2 flex-1">
@@ -149,10 +144,10 @@ const SeatSelectionScreen = () => {
                   source={images.wheel}
                   className="h-8 w-8 self-end mb-4"
                 />
-                {busAndSeatData?.seats?.map((rows, index) => {
+                {busAndSeatData?.seats?.map((rows: any, index: number) => {
                   return (
                     <View key={index} className="flex-row justify-between mb-3">
-                      {rows?.map(seat => {
+                      {rows?.map((seat: any) => {
                         if (seat.type === 'path') {
                           return (
                             <View key={seat.seat_id} className="h-10 w-10" />
@@ -168,7 +163,8 @@ const SeatSelectionScreen = () => {
                           <TouchableOpacity
                             key={seat.seat_id}
                             disabled={seat.booked}
-                            onPress={() => handlePressSeat(seat.seat_id)}>
+                            onPress={() => handlePressSeat(seat.seat_id)}
+                          >
                             <Image
                               source={seatImage}
                               className="w-10 h-10"
@@ -235,7 +231,7 @@ const SeatSelectionScreen = () => {
                 setTicketVisible(false);
                 navigation.reset({
                   index: 1,
-                  routes: [{name: 'HomeScreen'}, {name: 'BookingsScreen'}],
+                  routes: [{ name: 'HomeScreen' }, { name: 'BookingsScreen' }],
                 });
               }}
               bookingInfo={{
